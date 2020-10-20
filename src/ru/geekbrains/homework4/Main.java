@@ -28,6 +28,7 @@ import java.util.Scanner;
 
 public class Main {
     static final int SIZE = 3;
+    static final int WINSIZE = 3;
     static final char DOT_EMPTY = '•';
     static final char DOT_HUMAN = 'X';
     static final char DOT_AI = 'O';
@@ -157,19 +158,91 @@ public class Main {
     }
 
     private static boolean checkWin(char symbol) {
-        if (map[0][0] == symbol && map[0][1] == symbol && map[0][2] == symbol) return true;
-        if (map[1][0] == symbol && map[1][1] == symbol && map[1][2] == symbol) return true;
-        if (map[2][0] == symbol && map[2][1] == symbol && map[2][2] == symbol) return true;
 
-        if (map[0][0] == symbol && map[1][0] == symbol && map[2][0] == symbol) return true;
-        if (map[0][1] == symbol && map[1][1] == symbol && map[2][1] == symbol) return true;
-        if (map[0][2] == symbol && map[1][2] == symbol && map[2][2] == symbol) return true;
-
-        if (map[0][2] == symbol && map[1][1] == symbol && map[2][2] == symbol) return true;
-        if (map[0][2] == symbol && map[1][1] == symbol && map[2][0] == symbol) return true;
+        if (checkHorizontalValues(symbol)) return true;
+        if (chackVerticalValues(symbol)) return true;
+        if (chekRightDiagonalValues(symbol)) return true;
+        if (chekLeftDiagonalValues(symbol)) return true;
 
         return false;
     }
+
+    private static boolean checkHorizontalValues(char symbol) {
+
+        for (int i = 0; i < map.length; i++) {
+            int winChars = 0;
+            for (int j = 0; j < map[i].length; j++) {
+                if (symbol == map[i][j]) {
+                    winChars++;
+                    if (winChars == WINSIZE) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean chackVerticalValues(char symbol) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map.length; j++) {
+                int winChars = 0;
+                if (symbol == map[i][j]) {
+                    winChars++;
+                    for (int k = i + 1; k < map.length; k++) {
+                        if (symbol == map[k][j]) {
+                            winChars++;
+                            if (winChars == WINSIZE) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean chekRightDiagonalValues(char symbol) {
+        for (int i = 0; i <= (map.length - WINSIZE); i++) {
+            for (int j = WINSIZE - 1; j < map[i].length; j++) {
+                int winChars = 0;
+                if (map[i][j] == symbol) {
+                    winChars=1;
+                    for (int k = 1; k < WINSIZE; k++) {
+                        if (map[i + k][j - k] == symbol) {
+                            winChars++;
+                        }
+                    }
+                    if (winChars == WINSIZE) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean chekLeftDiagonalValues(char symbol) {
+        for (int i = 0; i <= map.length - WINSIZE; i++) {
+            for (int j = 0; j <= map[i].length - WINSIZE; j++) {
+                int winChars = 0;
+                if (map[i][j] == symbol) {
+                    winChars = 1;
+                    for (int k = 1; k < WINSIZE; k++) {
+                        if (map[i + k][j + k] == symbol) {
+                            winChars++;
+                        }
+                    }
+                    if (winChars == WINSIZE) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 
     private static boolean isMapFull() {
         for (char[] chars : map) {
